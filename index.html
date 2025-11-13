@@ -22,6 +22,24 @@
 </head>
 <body>
     <div class="background-gradient"></div>
+    
+    <!-- History Sidebar -->
+    <div id="historySidebar" class="history-sidebar">
+        <div class="history-header">
+            <h3><i class="ri-history-line"></i> History</h3>
+            <div class="history-actions">
+                <button onclick="clearHistory()" title="Clear All"><i class="ri-delete-bin-line"></i></button>
+                <button onclick="toggleHistoryPanel()" title="Close"><i class="ri-close-line"></i></button>
+            </div>
+        </div>
+        <div class="history-search">
+            <input type="text" id="historySearch" placeholder="Search history..." onkeyup="filterHistory()">
+        </div>
+        <div id="historyList" class="history-list">
+            <p class="no-history">No calculations yet</p>
+        </div>
+    </div>
+    
     <div class="calculator-wrapper">
         <h1 class="title">
             <span class="title-icon" style="-webkit-text-fill-color: #f59e0b;">∑</span>
@@ -31,11 +49,17 @@
         <div class="container">
             <div class="controls-bar">
                 <button class="control-btn" onclick="toggleAngleMode()" id="angle-mode-btn" title="Toggle Angle Mode (Deg/Rad)">DEG</button>
-                <button class="control-btn" onclick="showHistory()" title="Show Calculation History">
+                <button class="control-btn" onclick="toggleHistoryPanel()" title="Show/Hide History Panel">
                     <i class="ri-history-line"></i> History
                 </button>
-                <button class="control-btn" onclick="clearHistory()" title="Clear History">
-                    <i class="ri-delete-bin-line"></i> Clear
+                <button class="control-btn" onclick="openThemeSwitcher()" title="Change Theme">
+                    <i class="ri-palette-line"></i> Theme
+                </button>
+                <button class="control-btn" onclick="openGuide()" title="User Guide & Help">
+                    <i class="ri-lightbulb-line"></i> Guide
+                </button>
+                <button class="control-btn" onclick="openAdvancedMenu()" title="Advanced Functions">
+                    <i class="ri-functions"></i> Advanced
                 </button>
             </div>
             
@@ -84,7 +108,7 @@
                 <button class="btn btn-number" onclick="display.value += '6'" title="6">6</button>
                 <button class="btn btn-operator" onclick="display.value += '*'" title="Multiply">×</button>
                 <button class="btn btn-function" onclick="square()" title="Square">x²</button>
-                <button class="btn btn-function" onclick="cube()" title="Cube">x³</button>
+                <button class="btn btn-function" onclick="calculatePercentage()" title="Percentage">%</button>
                 
                 <!-- Row 5 -->
                 <button class="btn btn-number" onclick="display.value += '1'" title="1">1</button>
@@ -103,6 +127,776 @@
             </div>
         </div>
     </div>
+    
+    <!-- Advanced Functions Modal -->
+    <div id="advancedModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Advanced Functions</h2>
+                <span class="close-modal" onclick="closeAdvancedMenu()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="function-category">
+                    <h3>📊 Statistics</h3>
+                    <button class="advanced-btn" onclick="openStatistics('mean')">
+                        <i class="ri-bar-chart-line"></i> Mean (Average)
+                    </button>
+                    <button class="advanced-btn" onclick="openStatistics('median')">
+                        <i class="ri-line-chart-line"></i> Median
+                    </button>
+                    <button class="advanced-btn" onclick="openStatistics('mode')">
+                        <i class="ri-pie-chart-line"></i> Mode
+                    </button>
+                    <button class="advanced-btn" onclick="openStatistics('sd')">
+                        <i class="ri-pulse-line"></i> Standard Deviation
+                    </button>
+                </div>
+                
+                <div class="function-category">
+                    <h3>📐 Equation Solvers</h3>
+                    <button class="advanced-btn" onclick="openEquationSolver('linear2')">
+                        <i class="ri-calculator-line"></i> Linear Equation (2 Variables)
+                    </button>
+                    <button class="advanced-btn" onclick="openEquationSolver('linear3')">
+                        <i class="ri-calculator-fill"></i> Linear Equation (3 Variables)
+                    </button>
+                    <button class="advanced-btn" onclick="openEquationSolver('quadratic')">
+                        <i class="ri-function-line"></i> Quadratic Equation
+                    </button>
+                </div>
+                
+                <div class="function-category">
+                    <h3>🔢 Converters</h3>
+                    <button class="advanced-btn" onclick="openConverter('number')">
+                        <i class="ri-code-line"></i> Number System
+                    </button>
+                    <button class="advanced-btn" onclick="openConverter('unit')">
+                        <i class="ri-ruler-line"></i> Unit Converter
+                    </button>
+                    <button class="advanced-btn" onclick="openConverter('currency')">
+                        <i class="ri-money-dollar-circle-line"></i> Currency
+                    </button>
+                    <button class="advanced-btn" onclick="openConverter('time')">
+                        <i class="ri-time-line"></i> Time
+                    </button>
+                    <button class="advanced-btn" onclick="openConverter('data')">
+                        <i class="ri-hard-drive-line"></i> Data Storage
+                    </button>
+                </div>
+                
+                <div class="function-category">
+                    <h3>💰 Finance & Business</h3>
+                    <button class="advanced-btn" onclick="openCalculator('discount')">
+                        <i class="ri-percent-line"></i> Discount Calculator
+                    </button>
+                    <button class="advanced-btn" onclick="openCalculator('gst')">
+                        <i class="ri-receipt-line"></i> GST Calculator
+                    </button>
+                    <button class="advanced-btn" onclick="openCalculator('finance')">
+                        <i class="ri-funds-line"></i> Loan/EMI Calculator
+                    </button>
+                </div>
+                
+                <div class="function-category">
+                    <h3>🏥 Health & Utilities</h3>
+                    <button class="advanced-btn" onclick="openCalculator('bmi')">
+                        <i class="ri-heart-pulse-line"></i> BMI Calculator
+                    </button>
+                    <button class="advanced-btn" onclick="openCalculator('date')">
+                        <i class="ri-calendar-line"></i> Date Calculator
+                    </button>
+                </div>
+                
+                <div class="function-category">
+                    <h3>📈 Advanced Math</h3>
+                    <button class="advanced-btn" onclick="openGraphing()">
+                        <i class="ri-line-chart-line"></i> Graphing Calculator
+                    </button>
+                    <button class="advanced-btn" onclick="openMatrix()">
+                        <i class="ri-grid-line"></i> Matrix Calculator
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statistics Modal -->
+    <div id="statsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="statsTitle">Statistics Calculator</h2>
+                <span class="close-modal" onclick="closeStatsModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p class="modal-description">Enter numbers separated by commas (e.g., 1, 2, 3, 4, 5)</p>
+                <textarea id="statsInput" class="stats-input" placeholder="5, 10, 15, 20, 25"></textarea>
+                <button class="calculate-btn" onclick="calculateStatistics()">
+                    <i class="ri-calculator-line"></i> Calculate
+                </button>
+                <div id="statsResult" class="result-display"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Equation Solver Modal -->
+    <div id="equationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="equationTitle">Equation Solver</h2>
+                <span class="close-modal" onclick="closeEquationModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="equationInputs"></div>
+                <button class="calculate-btn" onclick="solveEquation()">
+                    <i class="ri-calculator-line"></i> Solve
+                </button>
+                <div id="equationResult" class="result-display"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Theme Switcher Modal -->
+    <div id="themeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Choose Theme</h2>
+                <span class="close-modal" onclick="closeThemeSwitcher()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="theme-grid">
+                    <div class="theme-option" onclick="setTheme('dark')" data-theme="dark">
+                        <div class="theme-preview dark-theme">
+                            <div class="preview-top"></div>
+                            <div class="preview-buttons"></div>
+                        </div>
+                        <p>Dark (Current)</p>
+                    </div>
+                    <div class="theme-option" onclick="setTheme('light')" data-theme="light">
+                        <div class="theme-preview light-theme">
+                            <div class="preview-top"></div>
+                            <div class="preview-buttons"></div>
+                        </div>
+                        <p>Light</p>
+                    </div>
+                    <div class="theme-option" onclick="setTheme('blue')" data-theme="blue">
+                        <div class="theme-preview blue-theme">
+                            <div class="preview-top"></div>
+                            <div class="preview-buttons"></div>
+                        </div>
+                        <p>Ocean Blue</p>
+                    </div>
+                    <div class="theme-option" onclick="setTheme('neon')" data-theme="neon">
+                        <div class="theme-preview neon-theme">
+                            <div class="preview-top"></div>
+                            <div class="preview-buttons"></div>
+                        </div>
+                        <p>Neon Pink</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Number System Converter Modal -->
+    <div id="numberModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Number System Converter</h2>
+                <span class="close-modal" onclick="closeConverter()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="converter-input">
+                    <label>Enter Number:</label>
+                    <input type="text" id="numberInput" placeholder="Enter number">
+                    <select id="numberBase">
+                        <option value="10">Decimal</option>
+                        <option value="2">Binary</option>
+                        <option value="8">Octal</option>
+                        <option value="16">Hexadecimal</option>
+                    </select>
+                    <button class="calculate-btn" onclick="convertNumber()">
+                        <i class="ri-refresh-line"></i> Convert
+                    </button>
+                </div>
+                <div id="numberResults" class="converter-results"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Unit Converter Modal -->
+    <div id="unitModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Unit Converter</h2>
+                <span class="close-modal" onclick="closeConverter()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="converter-input">
+                    <label>Category:</label>
+                    <select id="unitCategory" onchange="updateUnitOptions()">
+                        <option value="length">Length</option>
+                        <option value="weight">Weight</option>
+                        <option value="temperature">Temperature</option>
+                        <option value="area">Area</option>
+                        <option value="volume">Volume</option>
+                        <option value="speed">Speed</option>
+                    </select>
+                    
+                    <label>Value:</label>
+                    <input type="number" id="unitValue" placeholder="Enter value" step="any">
+                    
+                    <label>From:</label>
+                    <select id="unitFrom"></select>
+                    
+                    <label>To:</label>
+                    <select id="unitTo"></select>
+                    
+                    <button class="calculate-btn" onclick="convertUnit()">
+                        <i class="ri-exchange-line"></i> Convert
+                    </button>
+                </div>
+                <div id="unitResult" class="converter-results"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Graphing Calculator Modal -->
+    <div id="graphModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Graphing Calculator</h2>
+                <span class="close-modal" onclick="closeGraphing()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="graph-controls">
+                    <input type="text" id="functionInput" placeholder="Enter function: e.g., x^2, sin(x), 2*x+3">
+                    <button class="calculate-btn" onclick="plotGraph()">
+                        <i class="ri-line-chart-line"></i> Plot
+                    </button>
+                </div>
+                <canvas id="graphCanvas" width="600" height="400"></canvas>
+                <div id="graphInfo" class="graph-info"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Matrix Calculator Modal -->
+    <div id="matrixModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Matrix Calculator</h2>
+                <span class="close-modal" onclick="closeMatrix()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="matrix-controls">
+                    <label>Operation:</label>
+                    <select id="matrixOperation" onchange="generateMatrixInputs()">
+                        <option value="add">Addition</option>
+                        <option value="subtract">Subtraction</option>
+                        <option value="multiply">Multiplication</option>
+                        <option value="determinant">Determinant</option>
+                        <option value="transpose">Transpose</option>
+                        <option value="inverse">Inverse</option>
+                        <option value="rank">Rank</option>
+                    </select>
+                </div>
+                <div id="matrixInputs" class="matrix-inputs"></div>
+                <button class="calculate-btn" onclick="calculateMatrix()">
+                    <i class="ri-calculator-line"></i> Calculate
+                </button>
+                <div id="matrixResult" class="result-display"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Currency Converter Modal -->
+    <div id="currencyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Currency Converter</h2>
+                <span class="close-modal" onclick="closeCurrency()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="converter-controls">
+                    <input type="number" id="currencyAmount" placeholder="Amount" step="0.01">
+                    <select id="currencyFrom">
+                        <option value="USD">USD - US Dollar</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="GBP">GBP - British Pound Sterling</option>
+                        <option value="INR" selected>INR - Indian Rupee</option>
+                        <option value="JPY">JPY - Japanese Yen</option>
+                        <option value="CNY">CNY - Chinese Yuan</option>
+                        <option value="AUD">AUD - Australian Dollar</option>
+                        <option value="CAD">CAD - Canadian Dollar</option>
+                        <option value="CHF">CHF - Swiss Franc</option>
+                        <option value="AED">AED - UAE Dirham</option>
+                        <option value="SAR">SAR - Saudi Riyal</option>
+                        <option value="KRW">KRW - South Korean Won</option>
+                        <option value="SGD">SGD - Singapore Dollar</option>
+                        <option value="HKD">HKD - Hong Kong Dollar</option>
+                        <option value="NZD">NZD - New Zealand Dollar</option>
+                        <option value="SEK">SEK - Swedish Krona</option>
+                        <option value="NOK">NOK - Norwegian Krone</option>
+                        <option value="DKK">DKK - Danish Krone</option>
+                        <option value="MXN">MXN - Mexican Peso</option>
+                        <option value="BRL">BRL - Brazilian Real</option>
+                        <option value="ZAR">ZAR - South African Rand</option>
+                        <option value="RUB">RUB - Russian Ruble</option>
+                        <option value="TRY">TRY - Turkish Lira</option>
+                        <option value="PLN">PLN - Polish Zloty</option>
+                        <option value="THB">THB - Thai Baht</option>
+                        <option value="IDR">IDR - Indonesian Rupiah</option>
+                        <option value="MYR">MYR - Malaysian Ringgit</option>
+                        <option value="PHP">PHP - Philippine Peso</option>
+                        <option value="VND">VND - Vietnamese Dong</option>
+                        <option value="EGP">EGP - Egyptian Pound</option>
+                        <option value="NGN">NGN - Nigerian Naira</option>
+                        <option value="PKR">PKR - Pakistani Rupee</option>
+                        <option value="BDT">BDT - Bangladeshi Taka</option>
+                        <option value="ILS">ILS - Israeli Shekel</option>
+                        <option value="QAR">QAR - Qatari Riyal</option>
+                        <option value="KWD">KWD - Kuwaiti Dinar</option>
+                        <option value="OMR">OMR - Omani Rial</option>
+                        <option value="BHD">BHD - Bahraini Dinar</option>
+                        <option value="CZK">CZK - Czech Koruna</option>
+                        <option value="HUF">HUF - Hungarian Forint</option>
+                        <option value="RON">RON - Romanian Leu</option>
+                        <option value="ARS">ARS - Argentine Peso</option>
+                        <option value="CLP">CLP - Chilean Peso</option>
+                        <option value="COP">COP - Colombian Peso</option>
+                        <option value="PEN">PEN - Peruvian Sol</option>
+                        <option value="UAH">UAH - Ukrainian Hryvnia</option>
+                        <option value="KES">KES - Kenyan Shilling</option>
+                        <option value="LKR">LKR - Sri Lankan Rupee</option>
+                        <option value="MMK">MMK - Myanmar Kyat</option>
+                        <option value="NPR">NPR - Nepalese Rupee</option>
+                    </select>
+                    <select id="currencyTo">
+                        <option value="USD" selected>USD - US Dollar</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="GBP">GBP - British Pound Sterling</option>
+                        <option value="INR">INR - Indian Rupee</option>
+                        <option value="JPY">JPY - Japanese Yen</option>
+                        <option value="CNY">CNY - Chinese Yuan</option>
+                        <option value="AUD">AUD - Australian Dollar</option>
+                        <option value="CAD">CAD - Canadian Dollar</option>
+                        <option value="CHF">CHF - Swiss Franc</option>
+                        <option value="AED">AED - UAE Dirham</option>
+                        <option value="SAR">SAR - Saudi Riyal</option>
+                        <option value="KRW">KRW - South Korean Won</option>
+                        <option value="SGD">SGD - Singapore Dollar</option>
+                        <option value="HKD">HKD - Hong Kong Dollar</option>
+                        <option value="NZD">NZD - New Zealand Dollar</option>
+                        <option value="SEK">SEK - Swedish Krona</option>
+                        <option value="NOK">NOK - Norwegian Krone</option>
+                        <option value="DKK">DKK - Danish Krone</option>
+                        <option value="MXN">MXN - Mexican Peso</option>
+                        <option value="BRL">BRL - Brazilian Real</option>
+                        <option value="ZAR">ZAR - South African Rand</option>
+                        <option value="RUB">RUB - Russian Ruble</option>
+                        <option value="TRY">TRY - Turkish Lira</option>
+                        <option value="PLN">PLN - Polish Zloty</option>
+                        <option value="THB">THB - Thai Baht</option>
+                        <option value="IDR">IDR - Indonesian Rupiah</option>
+                        <option value="MYR">MYR - Malaysian Ringgit</option>
+                        <option value="PHP">PHP - Philippine Peso</option>
+                        <option value="VND">VND - Vietnamese Dong</option>
+                        <option value="EGP">EGP - Egyptian Pound</option>
+                        <option value="NGN">NGN - Nigerian Naira</option>
+                        <option value="PKR">PKR - Pakistani Rupee</option>
+                        <option value="BDT">BDT - Bangladeshi Taka</option>
+                        <option value="ILS">ILS - Israeli Shekel</option>
+                        <option value="QAR">QAR - Qatari Riyal</option>
+                        <option value="KWD">KWD - Kuwaiti Dinar</option>
+                        <option value="OMR">OMR - Omani Rial</option>
+                        <option value="BHD">BHD - Bahraini Dinar</option>
+                        <option value="CZK">CZK - Czech Koruna</option>
+                        <option value="HUF">HUF - Hungarian Forint</option>
+                        <option value="RON">RON - Romanian Leu</option>
+                        <option value="ARS">ARS - Argentine Peso</option>
+                        <option value="CLP">CLP - Chilean Peso</option>
+                        <option value="COP">COP - Colombian Peso</option>
+                        <option value="PEN">PEN - Peruvian Sol</option>
+                        <option value="UAH">UAH - Ukrainian Hryvnia</option>
+                        <option value="KES">KES - Kenyan Shilling</option>
+                        <option value="LKR">LKR - Sri Lankan Rupee</option>
+                        <option value="MMK">MMK - Myanmar Kyat</option>
+                        <option value="NPR">NPR - Nepalese Rupee</option>
+                    </select>
+                    <button class="calculate-btn" onclick="convertCurrency()">
+                        <i class="ri-exchange-line"></i> Convert
+                    </button>
+                </div>
+                <div id="currencyResult" class="converter-results"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Time Converter Modal -->
+    <div id="timeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Time Converter</h2>
+                <span class="close-modal" onclick="closeTime()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="converter-controls">
+                    <input type="number" id="timeAmount" placeholder="Value" step="0.01">
+                    <select id="timeFrom">
+                        <option value="seconds">Seconds</option>
+                        <option value="minutes">Minutes</option>
+                        <option value="hours" selected>Hours</option>
+                        <option value="days">Days</option>
+                        <option value="weeks">Weeks</option>
+                        <option value="months">Months</option>
+                        <option value="years">Years</option>
+                    </select>
+                    <select id="timeTo">
+                        <option value="seconds">Seconds</option>
+                        <option value="minutes" selected>Minutes</option>
+                        <option value="hours">Hours</option>
+                        <option value="days">Days</option>
+                        <option value="weeks">Weeks</option>
+                        <option value="months">Months</option>
+                        <option value="years">Years</option>
+                    </select>
+                    <button class="calculate-btn" onclick="convertTime()">
+                        <i class="ri-exchange-line"></i> Convert
+                    </button>
+                </div>
+                <div id="timeResult" class="converter-results"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Storage Converter Modal -->
+    <div id="dataModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Data Storage Converter</h2>
+                <span class="close-modal" onclick="closeData()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="converter-controls">
+                    <input type="number" id="dataAmount" placeholder="Value" step="0.01">
+                    <select id="dataFrom">
+                        <option value="bit">Bit</option>
+                        <option value="byte">Byte</option>
+                        <option value="kb">Kilobyte (KB)</option>
+                        <option value="mb" selected>Megabyte (MB)</option>
+                        <option value="gb">Gigabyte (GB)</option>
+                        <option value="tb">Terabyte (TB)</option>
+                        <option value="pb">Petabyte (PB)</option>
+                    </select>
+                    <select id="dataTo">
+                        <option value="bit">Bit</option>
+                        <option value="byte">Byte</option>
+                        <option value="kb">Kilobyte (KB)</option>
+                        <option value="mb">Megabyte (MB)</option>
+                        <option value="gb" selected>Gigabyte (GB)</option>
+                        <option value="tb">Terabyte (TB)</option>
+                        <option value="pb">Petabyte (PB)</option>
+                    </select>
+                    <button class="calculate-btn" onclick="convertData()">
+                        <i class="ri-exchange-line"></i> Convert
+                    </button>
+                </div>
+                <div id="dataResult" class="converter-results"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Discount Calculator Modal -->
+    <div id="discountModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Discount Calculator</h2>
+                <span class="close-modal" onclick="closeDiscount()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="calc-input-group">
+                    <label>Original Price:</label>
+                    <input type="number" id="originalPrice" placeholder="Enter price" step="0.01">
+                </div>
+                <div class="calc-input-group">
+                    <label>Discount (%):</label>
+                    <input type="number" id="discountPercent" placeholder="Enter discount %" step="0.01">
+                </div>
+                <button class="calculate-btn" onclick="calculateDiscount()">
+                    <i class="ri-calculator-line"></i> Calculate
+                </button>
+                <div id="discountResult" class="result-display"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GST Calculator Modal -->
+    <div id="gstModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>GST Calculator</h2>
+                <span class="close-modal" onclick="closeGST()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="calc-input-group">
+                    <label>Calculation Type:</label>
+                    <select id="gstType">
+                        <option value="add">Add GST to Price</option>
+                        <option value="remove">Remove GST from Price</option>
+                    </select>
+                </div>
+                <div class="calc-input-group">
+                    <label>Amount:</label>
+                    <input type="number" id="gstAmount" placeholder="Enter amount" step="0.01">
+                </div>
+                <div class="calc-input-group">
+                    <label>GST Rate (%):</label>
+                    <select id="gstRate">
+                        <option value="5">5%</option>
+                        <option value="12">12%</option>
+                        <option value="18" selected>18%</option>
+                        <option value="28">28%</option>
+                    </select>
+                </div>
+                <button class="calculate-btn" onclick="calculateGST()">
+                    <i class="ri-calculator-line"></i> Calculate
+                </button>
+                <div id="gstResult" class="result-display"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Finance/EMI Calculator Modal -->
+    <div id="financeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Loan EMI Calculator</h2>
+                <span class="close-modal" onclick="closeFinance()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="calc-input-group">
+                    <label>Loan Amount:</label>
+                    <input type="number" id="loanAmount" placeholder="Principal amount" step="1000">
+                </div>
+                <div class="calc-input-group">
+                    <label>Interest Rate (% per year):</label>
+                    <input type="number" id="interestRate" placeholder="Annual interest rate" step="0.1">
+                </div>
+                <div class="calc-input-group">
+                    <label>Loan Tenure (months):</label>
+                    <input type="number" id="loanTenure" placeholder="Number of months" step="1">
+                </div>
+                <button class="calculate-btn" onclick="calculateEMI()">
+                    <i class="ri-calculator-line"></i> Calculate EMI
+                </button>
+                <div id="financeResult" class="result-display"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BMI Calculator Modal -->
+    <div id="bmiModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>BMI Calculator</h2>
+                <span class="close-modal" onclick="closeBMI()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="calc-input-group">
+                    <label>Age:</label>
+                    <input type="number" id="age" placeholder="Enter age" min="1" max="120">
+                </div>
+                <div class="calc-input-group">
+                    <label>Gender:</label>
+                    <div class="gender-selector">
+                        <button class="gender-btn" id="maleBtn" onclick="selectGender('male')">
+                            <i class="ri-user-line"></i> Male
+                        </button>
+                        <button class="gender-btn active" id="femaleBtn" onclick="selectGender('female')">
+                            <i class="ri-user-line"></i> Female
+                        </button>
+                    </div>
+                </div>
+                <div class="calc-input-group">
+                    <label>Height (cm):</label>
+                    <input type="number" id="height" placeholder="Enter height in cm" step="0.1">
+                </div>
+                <div class="calc-input-group">
+                    <label>Weight (kg):</label>
+                    <input type="number" id="weight" placeholder="Enter weight in kg" step="0.1">
+                </div>
+                <button class="calculate-btn" onclick="calculateBMI()">
+                    <i class="ri-calculator-line"></i> Calculate BMI
+                </button>
+                <div id="bmiResult" class="result-display"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Date Calculator Modal -->
+    <div id="dateModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Date Calculator</h2>
+                <span class="close-modal" onclick="closeDate()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="calc-input-group">
+                    <label>Calculation Type:</label>
+                    <select id="dateCalcType">
+                        <option value="difference">Difference Between Dates</option>
+                        <option value="add">Add Days to Date</option>
+                        <option value="subtract">Subtract Days from Date</option>
+                    </select>
+                </div>
+                <div class="calc-input-group">
+                    <label>Start Date:</label>
+                    <input type="date" id="startDate">
+                </div>
+                <div class="calc-input-group" id="endDateGroup">
+                    <label>End Date:</label>
+                    <input type="date" id="endDate">
+                </div>
+                <div class="calc-input-group" id="daysGroup" style="display: none;">
+                    <label>Number of Days:</label>
+                    <input type="number" id="daysToAddSubtract" placeholder="Enter days" step="1">
+                </div>
+                <button class="calculate-btn" onclick="calculateDate()">
+                    <i class="ri-calculator-line"></i> Calculate
+                </button>
+                <div id="dateResult" class="result-display"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Guide Modal -->
+    <div id="guideModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2><i class="ri-lightbulb-line"></i> User Guide & Help</h2>
+                <span class="close-modal" onclick="closeGuide()">&times;</span>
+            </div>
+            <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                <div class="guide-section">
+                    <h3><i class="ri-calculator-line"></i> Basic Calculator</h3>
+                    <ul class="guide-list">
+                        <li><strong>Numbers & Operations:</strong> Click number buttons or type directly</li>
+                        <li><strong>Operators:</strong> +, −, ×, ÷ for basic arithmetic</li>
+                        <li><strong>Percentage (%):</strong> Calculate percentages (e.g., 50% = 0.5, 200*15% = 30)</li>
+                        <li><strong>Clear (C):</strong> Clear current input</li>
+                        <li><strong>All Clear (AC):</strong> Clear everything including memory</li>
+                        <li><strong>Delete (⌫):</strong> Remove last character</li>
+                        <li><strong>Equals (=):</strong> Calculate result</li>
+                    </ul>
+                </div>
+
+                <div class="guide-section">
+                    <h3><i class="ri-function-line"></i> Advanced Functions</h3>
+                    <ul class="guide-list">
+                        <li><strong>x²:</strong> Square a number</li>
+                        <li><strong>√:</strong> Square root</li>
+                        <li><strong>xʸ:</strong> Raise to any power</li>
+                        <li><strong>sin, cos, tan:</strong> Trigonometric functions (check DEG/RAD mode)</li>
+                        <li><strong>ln, log:</strong> Natural and base-10 logarithm</li>
+                        <li><strong>π, e:</strong> Mathematical constants</li>
+                        <li><strong>( ):</strong> Use parentheses for complex expressions</li>
+                    </ul>
+                </div>
+
+                <div class="guide-section">
+                    <h3><i class="ri-database-2-line"></i> Memory Functions</h3>
+                    <ul class="guide-list">
+                        <li><strong>MC:</strong> Memory Clear - Clear stored memory</li>
+                        <li><strong>MR:</strong> Memory Recall - Recall stored value</li>
+                        <li><strong>M+:</strong> Memory Add - Add current value to memory</li>
+                        <li><strong>M-:</strong> Memory Subtract - Subtract current value from memory</li>
+                        <li><strong>MS:</strong> Memory Store - Store current value</li>
+                    </ul>
+                </div>
+
+                <div class="guide-section">
+                    <h3><i class="ri-apps-line"></i> Advanced Features</h3>
+                    <ul class="guide-list">
+                        <li><strong>Unit Converter:</strong> Convert between Length, Weight, Temperature, Volume, Speed, Area, Time, Currency, Data Storage</li>
+                        <li><strong>Equation Solver:</strong> Solve linear and quadratic equations</li>
+                        <li><strong>Graphing Calculator:</strong> Plot mathematical functions (supports implicit multiplication like 2x, 3sin(x))</li>
+                        <li><strong>Matrix Calculator:</strong> Perform matrix operations (Add, Subtract, Multiply, Determinant, Inverse, Rank) with flexible 2×2 to 5×5 sizing</li>
+                        <li><strong>Statistics:</strong> Calculate Mean, Median, Mode, Standard Deviation, Variance</li>
+                    </ul>
+                </div>
+
+                <div class="guide-section">
+                    <h3><i class="ri-money-dollar-circle-line"></i> Finance & Business Tools</h3>
+                    <ul class="guide-list">
+                        <li><strong>Discount Calculator:</strong> Calculate final price after discount and savings</li>
+                        <li><strong>GST Calculator:</strong> Add or remove GST with rates (5%, 12%, 18%, 28%)</li>
+                        <li><strong>EMI Calculator:</strong> Calculate loan EMI with interest and tenure</li>
+                        <li><strong>Currency Converter:</strong> Convert between 50 world currencies</li>
+                    </ul>
+                </div>
+
+                <div class="guide-section">
+                    <h3><i class="ri-heart-pulse-line"></i> Health & Utilities</h3>
+                    <ul class="guide-list">
+                        <li><strong>BMI Calculator:</strong> Calculate Body Mass Index with age and gender factors, visual scale with categories</li>
+                        <li><strong>Date Calculator:</strong> Calculate difference, add, or subtract days between dates</li>
+                    </ul>
+                </div>
+
+                <div class="guide-section">
+                    <h3><i class="ri-keyboard-line"></i> Keyboard Shortcuts</h3>
+                    <ul class="guide-list">
+                        <li><strong>0-9:</strong> Number input</li>
+                        <li><strong>+ - * /:</strong> Basic operators</li>
+                        <li><strong>Enter:</strong> Calculate result (=)</li>
+                        <li><strong>Escape:</strong> Clear display (C)</li>
+                        <li><strong>Backspace:</strong> Delete last character</li>
+                        <li><strong>( ):</strong> Parentheses</li>
+                        <li><strong>. :</strong> Decimal point</li>
+                    </ul>
+                </div>
+
+                <div class="guide-section">
+                    <h3><i class="ri-palette-line"></i> Themes</h3>
+                    <ul class="guide-list">
+                        <li>Click <strong>Theme</strong> button to choose from multiple color themes</li>
+                        <li>Themes include: Classic, Midnight, Ocean, Forest, Sunset, Rose, Lavender, and Cyberpunk</li>
+                        <li>Theme preference is automatically saved</li>
+                    </ul>
+                </div>
+
+                <div class="guide-section">
+                    <h3><i class="ri-history-line"></i> History</h3>
+                    <ul class="guide-list">
+                        <li>All calculations are automatically saved in history</li>
+                        <li>Click <strong>History</strong> to view past calculations</li>
+                        <li>Click any history item to reuse it</li>
+                        <li>Clear history when needed</li>
+                    </ul>
+                </div>
+
+                <div class="guide-section">
+                    <h3><i class="ri-information-line"></i> Tips</h3>
+                    <ul class="guide-list">
+                        <li>Switch between <strong>DEG</strong> and <strong>RAD</strong> for trigonometric functions</li>
+                        <li>Use parentheses for complex expressions: (2+3)*(4+5)</li>
+                        <li>Graphing calculator supports implicit multiplication: 2x means 2*x</li>
+                        <li>Matrix size can be changed dynamically from 2×2 to 5×5</li>
+                        <li>Currency rates are approximate and updated periodically</li>
+                        <li>BMI calculator shows visual scale with health categories</li>
+                    </ul>
+                </div>
+
+                <div style="text-align: center; padding: 2rem; background: rgba(245, 158, 11, 0.1); border-radius: 10px; margin-top: 2rem; border: 2px solid var(--amber);">
+                    <i class="ri-lightbulb-flash-line" style="font-size: 2rem; color: var(--amber);"></i>
+                    <p style="margin-top: 1rem; color: var(--amber-light); font-weight: 600;">
+                        Need more help? Hover over any button to see tooltips!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
