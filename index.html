@@ -3,129 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src=
-    "https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.6.4/math.js"
-                integrity=
-    "sha512-BbVEDjbqdN3Eow8+empLMrJlxXRj5nEitiCAK5A1pUr66+jLVejo3PmjIaucRnjlB0P9R3rBUs3g5jXc8ti+fQ=="
-                crossorigin="anonymous"
-                referrerpolicy="no-referrer">
-          </script>
-    
+    <title>Scientific Calculator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.6.4/math.js"
+            integrity="sha512-BbVEDjbqdN3Eow8+empLMrJlxXRj5nEitiCAK5A1pUr66+jLVejo3PmjIaucRnjlB0P9R3rBUs3g5jXc8ti+fQ=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="utils.css">
-<link href=
-"https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 </head>
 <body>
-    <h1 style="color: green; text-align: center;">
-        Scientific Calculator !</h1>
-    <div class="container flex flex-col bg-red items-center  mx-auto m-w-20">
-        
-        <form>
-            <table>
-                <tr>
-                    <td colspan="6">
-                        <input id="display" type="text" placeholder="0">
-                    </td>
-                </tr>
-            <tr>
-                <td><input type="button" value="1"
-                           onclick="display.value += '1'"></td>
-                <td><input type="button" value="2"
-                           onclick="display.value += '2'"></td>
-                <td><input type="button" value="3"
-                           onclick="display.value += '3'"></td>
-                <td><input id="equals" type="button" value="C"
-                           onclick="display.value = ''"></td>
-                <td><input id="equals" type="button" value="⌫"
-                           onclick="backspace()"></td>
-                <td><input id="equal" type="button" value="="
-                           onclick="calculate()"></td>
-            </tr>
-    
-   
-                    <tr>
-                        <td><input type="button" value="4"
-                                   onclick="display.value += '4'"></td>
-                        <td><input type="button" value="5"
-                                   onclick="display.value += '5'"></td>
-                        <td><input type="button" value="6"
-                                   onclick="display.value += '6'"></td>
-                        <td><input  id="equals"type="button" value="-"
-                                   onclick="display.value += '-'"></td>
-                        <td><input id="equals" type="button" value="%"
-                                   onclick="display.value += '%'"></td>
-                        <td><input id="equals" type="button" value="cos("
-                                   onclick="display.value += 'cos('"></td>
-                    </tr>
-                    
+    <div class="background-gradient"></div>
+    <div class="calculator-wrapper">
+        <h1 class="title">
+            <span class="title-icon" style="-webkit-text-fill-color: #f59e0b;">∑</span>
+            Scientific Calculator
+            <span class="title-icon" style="-webkit-text-fill-color: #10b981;">π</span>
+        </h1>
+        <div class="container">
+            <div class="controls-bar">
+                <button class="control-btn" onclick="toggleAngleMode()" id="angle-mode-btn" title="Toggle Angle Mode (Deg/Rad)">DEG</button>
+                <button class="control-btn" onclick="showHistory()" title="Show Calculation History">
+                    <i class="ri-history-line"></i> History
+                </button>
+                <button class="control-btn" onclick="clearHistory()" title="Clear History">
+                    <i class="ri-delete-bin-line"></i> Clear
+                </button>
+            </div>
             
-            <tr>
-                <td><input type="button" value="7"
-                           onclick="display.value += '7'"></td>
-                <td><input type="button" value="8"
-                           onclick="display.value += '8'"></td>
-                <td><input type="button" value="9"
-                           onclick="display.value += '9'"></td>
-                <td><input id="equals" type="button" value="x"
-                           onclick="display.value += '*'"></td>
-                <td><input id="equals" type="button" value="!"
-                           onclick="display.value += '!'"></td>
-                <td><input id="equals" type="button" value="sin("
-                           onclick="display.value += 'sin('"></td>
-            </tr>
-        
-       
-        <tr>
-            <td><input type="button" value="."
-                       onclick="display.value += '.'"></td>
-            <td><input type="button" value="0"
-                       onclick="display.value += '0'"></td>
-            <td><input type="button" value="00"
-                       onclick="display.value += '00'"></td>
-            <td><input  id="equals"type="button" value="+"
-                       onclick="display.value += '+'"></td>
-            <td><input id="equals" type="button" value="/"
-                       onclick="display.value += '/'"></td>
-            <td><input id="equals" type="button" value="tan("
-                       onclick="display.value += 'tan('"></td>
-        </tr>
-
-
-
-    <tr>
-        <td><input id="equals" type="button" value="E"
-                   onclick="e()"></td>
-        <td><input id="equals" type="button" value="pi"
-                   onclick="pi()"></td>
-        <td><input id="equals" type="button" value="^"
-                   onclick="power()"></td>
-        <td><input id="equals" type="button" value="("
-                   onclick="display.value += '('"></td>
-        <td><input id="equals" type="button" value=")"
-                   onclick="display.value += ')'"></td>
-        <td><input id="equals" type="button" value="log("
-                   onclick="base10Log()"></td>
-    </tr>
-
-    <tr>
-        <td><input id="equals" type="button" value="sqrt("
-                   onclick="squareRoot()"></td>
-        <td><input id="equals" type="button" value="ln2"
-                   onclick="display.value += Math.LN2"></td>
-        <td><input id="equals" type="button" value="log10("
-                   onclick="base10Log()"></td>
-        <td><input id="equals" type="button" value="l2e"
-                   onclick="display.value += Math.LOG2E"></td>
-        <td><input id="equals" type="button" value="l10e"
-                   onclick="display.value += Math.LOG10E"></td>
-        <td><input id="equals" type="button" value="exp("
-                   onclick="display.value += 'exp('"></td>
-    </tr>
-</table>
-</form>
-    <script src="script.js"></script>
+            <div class="display-container">
+                <div class="display-history" id="history"></div>
+                <input id="display" type="text" placeholder="0" autocomplete="off">
+            </div>
+            
+            <div class="memory-bar">
+                <button class="memory-btn" onclick="memoryClear()" title="Memory Clear">MC</button>
+                <button class="memory-btn" onclick="memoryRecall()" title="Memory Recall">MR</button>
+                <button class="memory-btn" onclick="memoryStore()" title="Memory Store">MS</button>
+                <button class="memory-btn" onclick="memoryAdd()" title="Memory Add">M+</button>
+                <button class="memory-btn" onclick="memorySubtract()" title="Memory Subtract">M-</button>
+                <button class="memory-btn" onclick="useLastResult()" title="Use Last Result">ANS</button>
+            </div>
+            
+            <div class="button-grid">
+                <!-- Row 1: Scientific Functions -->
+                <button class="btn btn-function" onclick="display.value += 'sin('" title="Sine">sin</button>
+                <button class="btn btn-function" onclick="display.value += 'cos('" title="Cosine">cos</button>
+                <button class="btn btn-function" onclick="display.value += 'tan('" title="Tangent">tan</button>
+                <button class="btn btn-function" onclick="squareRoot()" title="Square Root">√</button>
+                <button class="btn btn-function" onclick="power()" title="Power">x^y</button>
+                <button class="btn btn-function" onclick="display.value += 'log('" title="Logarithm base 10">log</button>
+                
+                <!-- Row 2: Constants & Advanced -->
+                <button class="btn btn-function" onclick="pi()" title="Pi (π)">π</button>
+                <button class="btn btn-function" onclick="e()" title="Euler's number (e)">e</button>
+                <button class="btn btn-function" onclick="naturalLog()" title="Natural Logarithm">ln</button>
+                <button class="btn btn-function" onclick="absolute()" title="Absolute Value">|x|</button>
+                <button class="btn btn-function" onclick="inverse()" title="1/x">1/x</button>
+                <button class="btn btn-function" onclick="display.value += '!'" title="Factorial">n!</button>
+                
+                <!-- Row 3: Numbers & Operations -->
+                <button class="btn btn-number" onclick="display.value += '7'" title="7">7</button>
+                <button class="btn btn-number" onclick="display.value += '8'" title="8">8</button>
+                <button class="btn btn-number" onclick="display.value += '9'" title="9">9</button>
+                <button class="btn btn-operator" onclick="display.value += '/'" title="Divide">÷</button>
+                <button class="btn btn-clear" onclick="display.value = ''; document.getElementById('history').textContent = ''" title="Clear (Esc)">C</button>
+                <button class="btn btn-clear" onclick="backspace()" title="Backspace">⌫</button>
+                
+                <!-- Row 4 -->
+                <button class="btn btn-number" onclick="display.value += '4'" title="4">4</button>
+                <button class="btn btn-number" onclick="display.value += '5'" title="5">5</button>
+                <button class="btn btn-number" onclick="display.value += '6'" title="6">6</button>
+                <button class="btn btn-operator" onclick="display.value += '*'" title="Multiply">×</button>
+                <button class="btn btn-function" onclick="square()" title="Square">x²</button>
+                <button class="btn btn-function" onclick="cube()" title="Cube">x³</button>
+                
+                <!-- Row 5 -->
+                <button class="btn btn-number" onclick="display.value += '1'" title="1">1</button>
+                <button class="btn btn-number" onclick="display.value += '2'" title="2">2</button>
+                <button class="btn btn-number" onclick="display.value += '3'" title="3">3</button>
+                <button class="btn btn-operator" onclick="display.value += '-'" title="Subtract">−</button>
+                <button class="btn btn-function" onclick="display.value += '('" title="Left Parenthesis">(</button>
+                <button class="btn btn-function" onclick="display.value += ')'" title="Right Parenthesis">)</button>
+                
+                <!-- Row 6 -->
+                <button class="btn btn-number" onclick="display.value += '0'" title="0">0</button>
+                <button class="btn btn-number" onclick="display.value += '00'" title="00">00</button>
+                <button class="btn btn-number" onclick="display.value += '.'" title="Decimal Point">.</button>
+                <button class="btn btn-operator" onclick="display.value += '+'" title="Add">+</button>
+                <button class="btn btn-equals" onclick="calculate()" style="grid-column: span 2" title="Calculate (Enter)">=</button>
+            </div>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>

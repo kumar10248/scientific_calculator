@@ -1,20 +1,49 @@
-.text-center{
-    text-align: center;
-    justify-content: center;
-    color: #CC7722;
-    text-weight:900;
-}
-.bg-red{
-    background-color: rgb(64, 53, 64);
-}
-.mx-auto {
-    margin: auto;
-}
-.flex{
-display: flex;
+/* Additional utility classes for future enhancements */
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
 }
 
-.items-center{
-    align-items: center;
-    justify-content: center;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide-in {
+    animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Accessibility improvements */
+.btn:focus-visible {
+    outline: 3px solid rgba(245, 158, 11, 0.8);
+    outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+    .background-gradient {
+        display: none;
+    }
+    
+    .container {
+        box-shadow: none;
+        border: 2px solid #f59e0b;
+    }
 }
