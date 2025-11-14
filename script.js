@@ -11,6 +11,14 @@ document.addEventListener('DOMContentLoaded', function() {
 	// Keyboard support
 	document.addEventListener('keydown', handleKeyboard);
 	
+	// Add haptic feedback to all buttons
+	const allButtons = document.querySelectorAll('button');
+	allButtons.forEach(button => {
+		button.addEventListener('click', function() {
+			hapticFeedback(8); // Light vibration on any button press
+		});
+	});
+	
 	// Prevent default behavior for certain keys
 	display.addEventListener('keypress', function(e) {
 		const allowedKeys = /[0-9+\-*/.()%^!epi]/;
@@ -139,8 +147,9 @@ function calculate() {
 		display.value = '';
 		animateResult(result.toString(), display);
 		
-		// Add success animation
+		// Add success animation and haptic feedback
 		display.parentElement.classList.add('success-flash');
+		hapticFeedback(20); // Medium vibration on successful calculation
 		setTimeout(() => {
 			display.parentElement.classList.remove('success-flash');
 		}, 300);
@@ -149,6 +158,7 @@ function calculate() {
 		console.error('Calculation error:', error);
 		display.value = "Error";
 		display.parentElement.classList.add('error-flash');
+		hapticFeedback(50); // Stronger vibration on error
 		setTimeout(() => {
 			display.parentElement.classList.remove('error-flash');
 			display.value = '';
@@ -179,12 +189,21 @@ function animateResult(text, element) {
 	}, 30);
 }
 
+// Haptic feedback for mobile devices
+function hapticFeedback(intensity = 10) {
+	// Check if the Vibration API is supported
+	if ('vibrate' in navigator) {
+		navigator.vibrate(intensity);
+	}
+}
+
 function animateDisplay() {
 	let display = document.getElementById("display");
 	display.style.transform = 'scale(0.98)';
 	setTimeout(() => {
 		display.style.transform = 'scale(1)';
 	}, 100);
+	hapticFeedback(10); // Light vibration on display animation
 }
 
 function squareRoot() {
