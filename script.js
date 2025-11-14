@@ -196,25 +196,14 @@ function animateResult(text, element) {
 }
 
 // Haptic feedback for mobile devices
-function hapticFeedback(intensity = 10) {
+function hapticFeedback(intensity = 15) {
 	try {
-		// Check if the Vibration API is supported
-		if (typeof navigator.vibrate === 'function') {
-			navigator.vibrate(intensity);
-			return true;
-		} else if (typeof navigator.webkitVibrate === 'function') {
-			// Fallback for older webkit browsers
-			navigator.webkitVibrate(intensity);
-			return true;
-		} else if (typeof navigator.mozVibrate === 'function') {
-			// Fallback for Firefox
-			navigator.mozVibrate(intensity);
-			return true;
+		// Direct vibration call - simpler approach
+		if (window.navigator && window.navigator.vibrate) {
+			window.navigator.vibrate(intensity);
 		}
-		return false;
 	} catch (e) {
-		console.error('Vibration error:', e);
-		return false;
+		// Silently fail
 	}
 }
 
