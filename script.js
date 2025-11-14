@@ -2548,11 +2548,11 @@ window.addEventListener('online', () => {
 });
 
 window.addEventListener('offline', () => {
-	// Silently go offline - no notification
+	showNotification('You are offline. App will continue to work! 📵', 'success');
 	document.body.classList.add('offline-mode');
 });
 
-// Check initial online status (silently)
+// Check initial online status
 if (!navigator.onLine) {
 	document.body.classList.add('offline-mode');
 }
