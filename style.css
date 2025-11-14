@@ -2075,22 +2075,8 @@ body[data-theme="neon"] .background-gradient {
     transform: scale(1.2);
 }
 
-/* Offline Mode Indicator */
-body.offline-mode::before {
-    content: '📵 Offline Mode';
-    position: fixed;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(239, 68, 68, 0.9);
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    z-index: 9999;
-    animation: pulse 2s ease-in-out infinite;
-}
+/* Offline Mode Indicator - Removed to prevent title blocking */
+/* Users will see offline notification instead */
 
 @keyframes pulse {
     0%, 100% {
