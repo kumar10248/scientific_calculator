@@ -2410,3 +2410,151 @@ function calculateDate() {
 	}
 	showNotification('Date calculated!', 'success');
 }
+
+// ================================
+// PWA SERVICE WORKER REGISTRATION
+// ================================
+
+// Service Worker Registration
+if ('serviceWorker' in navigator) {
+	window.addEventListener('load', () => {
+		navigator.serviceWorker.register('./sw.js')
+			.then((registration) => {
+				console.log('✅ Service Worker registered successfully:', registration.scope);
+				
+				// Check for updates
+				registration.addEventListener('updatefound', () => {
+					const newWorker = registration.installing;
+					newWorker.addEventListener('statechange', () => {
+						if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+							// New service worker available, show update notification
+							showUpdateNotification();
+						}
+					});
+				});
+			})
+			.catch((error) => {
+				console.error('❌ Service Worker registration failed:', error);
+			});
+	});
+}
+
+// PWA Install Prompt
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+	// Prevent the mini-infobar from appearing on mobile
+	e.preventDefault();
+	// Stash the event so it can be triggered later
+	deferredPrompt = e;
+	// Show install button
+	showInstallButton();
+});
+
+function showInstallButton() {
+	// Create install button if it doesn't exist
+	if (!document.getElementById('pwa-install-btn')) {
+		const installBtn = document.createElement('button');
+		installBtn.id = 'pwa-install-btn';
+		installBtn.className = 'pwa-install-btn';
+		installBtn.innerHTML = '<i class="ri-download-line"></i> Install App';
+		installBtn.onclick = installPWA;
+		document.body.appendChild(installBtn);
+		
+		// Show notification
+		setTimeout(() => {
+			showNotification('Install app for offline access! Click the install button.', 'success');
+		}, 2000);
+	}
+}
+
+async function installPWA() {
+	if (!deferredPrompt) {
+		return;
+	}
+	
+	// Show the install prompt
+	deferredPrompt.prompt();
+	
+	// Wait for the user's response
+	const { outcome } = await deferredPrompt.userChoice;
+	console.log(`User response to install prompt: ${outcome}`);
+	
+	if (outcome === 'accepted') {
+		showNotification('App installed successfully! 🎉', 'success');
+		// Hide install button
+		const installBtn = document.getElementById('pwa-install-btn');
+		if (installBtn) {
+			installBtn.style.display = 'none';
+		}
+	}
+	
+	// Clear the deferred prompt
+	deferredPrompt = null;
+}
+
+// Detect if app is installed
+window.addEventListener('appinstalled', () => {
+	console.log('✅ PWA was installed');
+	showNotification('Calculator installed successfully! 🎉', 'success');
+	// Hide install button
+	const installBtn = document.getElementById('pwa-install-btn');
+	if (installBtn) {
+		installBtn.remove();
+	}
+});
+
+// Show update notification when new version is available
+function showUpdateNotification() {
+	const updateBanner = document.createElement('div');
+	updateBanner.className = 'update-banner';
+	updateBanner.innerHTML = `
+		<div class="update-content">
+			<i class="ri-information-line"></i>
+			<span>New version available!</span>
+		</div>
+		<button onclick="updateApp()" class="update-btn">Update Now</button>
+		<button onclick="dismissUpdate()" class="dismiss-btn">&times;</button>
+	`;
+	document.body.appendChild(updateBanner);
+	
+	// Auto show after 1 second
+	setTimeout(() => {
+		updateBanner.classList.add('show');
+	}, 1000);
+}
+
+function updateApp() {
+	// Tell service worker to skip waiting
+	if (navigator.serviceWorker.controller) {
+		navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+	}
+	// Reload the page
+	window.location.reload();
+}
+
+function dismissUpdate() {
+	const banner = document.querySelector('.update-banner');
+	if (banner) {
+		banner.classList.remove('show');
+		setTimeout(() => banner.remove(), 300);
+	}
+}
+
+// Online/Offline Detection
+window.addEventListener('online', () => {
+	showNotification('Back online! 🌐', 'success');
+	document.body.classList.remove('offline-mode');
+});
+
+window.addEventListener('offline', () => {
+	showNotification('You are offline. App will continue to work! 📵', 'success');
+	document.body.classList.add('offline-mode');
+});
+
+// Check initial online status
+if (!navigator.onLine) {
+	document.body.classList.add('offline-mode');
+}
+
+console.log('🚀 PWA features initialized');
