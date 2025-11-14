@@ -11,12 +11,17 @@ document.addEventListener('DOMContentLoaded', function() {
 	// Keyboard support
 	document.addEventListener('keydown', handleKeyboard);
 	
-	// Add haptic feedback to all buttons
+	// Add haptic feedback to all buttons - use both click and touchstart for better mobile support
 	const allButtons = document.querySelectorAll('button');
-	console.log(`Adding haptic feedback to ${allButtons.length} buttons`);
 	allButtons.forEach(button => {
+		// Use touchstart for immediate mobile response
+		button.addEventListener('touchstart', function(e) {
+			hapticFeedback(15);
+		}, { passive: true });
+		
+		// Also add to click for desktop compatibility
 		button.addEventListener('click', function(e) {
-			hapticFeedback(8); // Light vibration on any button press
+			hapticFeedback(15);
 		}, { passive: true });
 	});
 	
@@ -150,7 +155,7 @@ function calculate() {
 		
 		// Add success animation and haptic feedback
 		display.parentElement.classList.add('success-flash');
-		hapticFeedback(20); // Medium vibration on successful calculation
+		hapticFeedback(30); // Medium vibration on successful calculation
 		setTimeout(() => {
 			display.parentElement.classList.remove('success-flash');
 		}, 300);
@@ -159,7 +164,7 @@ function calculate() {
 		console.error('Calculation error:', error);
 		display.value = "Error";
 		display.parentElement.classList.add('error-flash');
-		hapticFeedback(50); // Stronger vibration on error
+		hapticFeedback(100); // Stronger vibration on error
 		setTimeout(() => {
 			display.parentElement.classList.remove('error-flash');
 			display.value = '';
@@ -194,23 +199,22 @@ function animateResult(text, element) {
 function hapticFeedback(intensity = 10) {
 	try {
 		// Check if the Vibration API is supported
-		if (navigator.vibrate) {
-			const result = navigator.vibrate(intensity);
-			console.log(`Vibration called with intensity: ${intensity}, result:`, result);
-		} else if (navigator.webkitVibrate) {
+		if (typeof navigator.vibrate === 'function') {
+			navigator.vibrate(intensity);
+			return true;
+		} else if (typeof navigator.webkitVibrate === 'function') {
 			// Fallback for older webkit browsers
 			navigator.webkitVibrate(intensity);
-			console.log(`Webkit vibration called with intensity: ${intensity}`);
-		} else if (navigator.mozVibrate) {
+			return true;
+		} else if (typeof navigator.mozVibrate === 'function') {
 			// Fallback for Firefox
 			navigator.mozVibrate(intensity);
-			console.log(`Mozilla vibration called with intensity: ${intensity}`);
-		} else {
-			console.log('Vibration API not supported on this device/browser');
+			return true;
 		}
+		return false;
 	} catch (e) {
-		// Silently fail if vibration is not supported
-		console.log('Vibration error:', e);
+		console.error('Vibration error:', e);
+		return false;
 	}
 }
 
@@ -220,7 +224,7 @@ function animateDisplay() {
 	setTimeout(() => {
 		display.style.transform = 'scale(1)';
 	}, 100);
-	hapticFeedback(10); // Light vibration on display animation
+	hapticFeedback(15); // Light vibration on display animation
 }
 
 function squareRoot() {
