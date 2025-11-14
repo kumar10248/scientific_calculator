@@ -13,10 +13,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	// Add haptic feedback to all buttons
 	const allButtons = document.querySelectorAll('button');
+	console.log(`Adding haptic feedback to ${allButtons.length} buttons`);
 	allButtons.forEach(button => {
-		button.addEventListener('click', function() {
+		button.addEventListener('click', function(e) {
 			hapticFeedback(8); // Light vibration on any button press
-		});
+		}, { passive: true });
 	});
 	
 	// Prevent default behavior for certain keys
@@ -191,9 +192,25 @@ function animateResult(text, element) {
 
 // Haptic feedback for mobile devices
 function hapticFeedback(intensity = 10) {
-	// Check if the Vibration API is supported
-	if ('vibrate' in navigator) {
-		navigator.vibrate(intensity);
+	try {
+		// Check if the Vibration API is supported
+		if (navigator.vibrate) {
+			const result = navigator.vibrate(intensity);
+			console.log(`Vibration called with intensity: ${intensity}, result:`, result);
+		} else if (navigator.webkitVibrate) {
+			// Fallback for older webkit browsers
+			navigator.webkitVibrate(intensity);
+			console.log(`Webkit vibration called with intensity: ${intensity}`);
+		} else if (navigator.mozVibrate) {
+			// Fallback for Firefox
+			navigator.mozVibrate(intensity);
+			console.log(`Mozilla vibration called with intensity: ${intensity}`);
+		} else {
+			console.log('Vibration API not supported on this device/browser');
+		}
+	} catch (e) {
+		// Silently fail if vibration is not supported
+		console.log('Vibration error:', e);
 	}
 }
 
